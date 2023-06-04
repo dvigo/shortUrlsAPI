@@ -1,0 +1,32 @@
+version: "3.7"
+services:
+  app:
+    build:
+      args:
+        user: sammy
+        uid: 1000
+      context: ./
+      dockerfile: Dockerfile
+    container_name: shortUrl-app
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+      - ./code:/var/www
+    networks:
+      - shortUrl
+
+  nginx:
+    image: nginx:alpine
+    container_name: shortUrl-nginx
+    restart: unless-stopped
+    ports:
+      - 80:80
+    volumes:
+      - ./code:/var/www
+      - ./docker-compose/nginx:/etc/nginx/conf.d/
+    networks:
+      - shortUrl
+
+networks:
+  shortUrl:
+    driver: bridge
